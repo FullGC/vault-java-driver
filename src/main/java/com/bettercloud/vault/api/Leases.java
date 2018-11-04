@@ -3,6 +3,7 @@ package com.bettercloud.vault.api;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
 import com.bettercloud.vault.json.Json;
+import com.bettercloud.vault.json.JsonObject;
 import com.bettercloud.vault.response.VaultResponse;
 import com.bettercloud.vault.rest.Rest;
 import com.bettercloud.vault.rest.RestResponse;
@@ -213,9 +214,11 @@ public class Leases {
         int retryCount = 0;
         while (true) {
             try {
-                final String requestJson = Json.object().add("increment", increment).toString();
+                JsonObject jsonBody =  Json.object().add("lease_id", leaseId);
+                if (increment > 0) jsonBody.add("increment", increment);
+                String requestJson = jsonBody.toString();
                 final RestResponse restResponse = new Rest()//NOPMD
-                        .url(config.getAddress() + "/v1/sys/renew/" + leaseId)
+                        .url(config.getAddress() + "/v1/sys/leases/renew")
                         .header("X-Vault-Token", config.getToken())
                         .body(increment < 0 ? null : requestJson.getBytes("UTF-8"))
                         .connectTimeoutSeconds(config.getOpenTimeout())

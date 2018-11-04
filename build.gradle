@@ -4,7 +4,7 @@ apply plugin: 'signing'
 
 group 'com.bettercloud'
 archivesBaseName = 'vault-java-driver'
-version '3.1.0'
+version '3.1.3'
 ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 compileJava {
@@ -127,52 +127,34 @@ signing {
 
 uploadArchives {
     repositories {
+    /*    maven {
+            +url "https://artifactory.inner-active.mobi/artifactory/libs-release" //The Artifactory (preferably virtual) repository to resolve from
+            credentials {               //Optional resolver credentials (leave out to use anonymous resolution)
+                username = "dani"
+                password = "dani"
+            }
+        }*/
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
+            repository(url: "https://artifactory.inner-active.mobi/artifactory/libs-release-local/") {
+                authentication(userName: "?", password: "?")
             }
 
 //            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
 //                authentication(userName: ossrhUsername, password: ossrhPassword)
 //            }
-            snapshotRepository(url: nexusUrl) {
+        /*    snapshotRepository(url: nexusUrl) {
                 authentication(userName: nexusUsername, password: nexusPassword)
-            }
+            }*/
 
             pom.project {
                 name 'vault-java-driver'
                 packaging 'jar'
                 // optionally artifactId can be defined here
                 description 'Zero-dependency Java client for HashiCorp\'s Vault'
-                url 'https://github.com/BetterCloud/vault-java-driver'
+                url 'aa'
 
-                scm {
-                    connection 'https://github.com/BetterCloud/vault-java-driver.git'
-                    developerConnection 'https://github.com/BetterCloud/vault-java-driver.git'
-                    url 'https://github.com/BetterCloud/vault-java-driver'
-                }
-
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'https://github.com/BetterCloud/vault-java-driver/blob/master/README.md'
-                    }
-                }
-
-                developers {[
-                    developer {
-                        id 'steve-perkins'
-                        name 'Steve Perkins'
-                        email 'steve@steveperkins.com'
-                    },
-                    developer {
-                        id 'steve-perkins-bc'
-                        name 'Steve Perkins'
-                        email 'steve.perkins@bettercloud.com'
-                    }
-                ]}
             }
         }
     }
